@@ -17,7 +17,14 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									""
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response includes a fact\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.fact).to.be.a('string');\r",
+									"});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -27,14 +34,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Response includes a fact\", function () {\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData.fact).to.be.a('string');\r",
-									"});"
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -65,15 +65,26 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 201\", function () {\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201 (Created)\", () => {\r",
 									"    pm.response.to.have.status(201);\r",
 									"});\r",
 									"\r",
-									"pm.test(\"Response should include an ID\", function () {\r",
-									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData).to.have.property(\"id\");\r",
-									"});\r",
-									""
+									"pm.test(\"Response includes new post data\", () => {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response.title).to.eql(\"Cat Fact\");\r",
+									"    pm.expect(response.body).to.include(\"Cats have 230 bones\");\r",
+									"    pm.expect(response.id).to.be.a('number');\r",
+									"});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -85,7 +96,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"title\": \"foo\",\r\n  \"body\": \"bar\",\r\n  \"userId\": 1\r\n}\r\n",
+							"raw": "{\r\n    \"title\": \"Cat Fact\",\r\n    \"body\": \"Cats have 230 bones, while humans only have 206.\",\r\n    \"userId\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -112,6 +123,16 @@
 					"event": [
 						{
 							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
 							"script": {
 								"exec": [
 									"pm.test(\"Status code is 200 (OK)\", () => {\r",
@@ -162,6 +183,16 @@
 					"event": [
 						{
 							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
 							"script": {
 								"exec": [
 									"pm.test(\"Status code is 200 (OK)\", () => {\r",
