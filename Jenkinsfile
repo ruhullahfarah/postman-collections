@@ -1,23 +1,25 @@
 pipeline {
     agent any
-
     tools {
-        nodejs 'node18'  // Must match the name you gave in Global Tool Configuration
+        nodejs "node18"  // Name as defined in Jenkins Global Tools Configuration
     }
-
+    environment {
+        PATH = "${tool 'node18'}/bin:${env.PATH}"
+    }
     stages {
         stage('Checkout Git') {
             steps {
-                git branch: 'main', 
-                url: 'https://github.com/ruhullahfarah/postman-collections.git',
-                credentialsId: 'github-token'
+                git url: 'https://github.com/ruhullahfarah/postman-collections.git', branch: 'main', credentialsId: 'github-token'
             }
         }
-
+        stage('Install Dependencies') {
+            steps {
+                bat 'npm install newman'
+            }
+        }
         stage('Run Postman Tests') {
             steps {
-                bat 'npm install -g newman'
-                bat 'newman run practiceAPI.postman_collection.json'
+                bat 'npx newman run practiceAPI.postman_collection.json'
             }
         }
     }
