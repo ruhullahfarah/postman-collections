@@ -29,7 +29,6 @@ pipeline {
             steps {
                 bat '''
                     npx newman run practiceAPI.postman_collection.json ^
-                      -e practiceAPI-env.postman_environment.json ^
                       --reporters cli,junit,htmlextra ^
                       --reporter-junit-export results.xml ^
                       --reporter-htmlextra-export newman-report.html
