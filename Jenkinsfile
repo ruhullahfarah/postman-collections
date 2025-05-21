@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'node18'
+        nodejs 'node18'  // Name must match the one in Jenkins > Global Tool Configuration
     }
+
     environment {
         PATH = "${tool 'node18'}/bin;${env.PATH}"
     }
@@ -20,7 +21,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 bat 'npm ci --no-audit --no-fund'
-                bat 'npm install newman newman-reporter-html'
+                bat 'npm install newman newman-reporter-htmlextra'
             }
         }
 
@@ -29,9 +30,9 @@ pipeline {
                 bat '''
                     npx newman run practiceAPI.postman_collection.json ^
                       -e practiceAPI-env.postman_environment.json ^
-                      --reporters cli,junit,html ^
+                      --reporters cli,junit,htmlextra ^
                       --reporter-junit-export results.xml ^
-                      --reporter-html-export newman-report.html
+                      --reporter-htmlextra-export newman-report.html
                 '''
             }
         }
@@ -39,12 +40,10 @@ pipeline {
 
     post {
         always {
-            // Publish JUnit report
             junit 'results.xml'
 
-            // Publish HTML report (requires "HTML Publisher" plugin)
             publishHTML(target: [
-                reportDir: '.',                // Current workspace
+                reportDir: '.',                       // Current workspace
                 reportFiles: 'newman-report.html',
                 reportName: 'Newman HTML Report',
                 keepAll: true,
